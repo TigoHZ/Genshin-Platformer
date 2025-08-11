@@ -160,7 +160,12 @@ export default {
     },
     
     handleImageError(event) {
-      // Fallback to a solid color placeholder based on element
+      // Prevent multiple error handling on the same image
+      if (event.target.src.includes('via.placeholder.com')) {
+        return // Already using placeholder, don't handle error again
+      }
+      
+      // Fallback to a solid color placeholder
       const character = this.characters.find(char => 
         event.target.src.includes(char.id) || 
         event.target.alt === char.name
@@ -175,6 +180,8 @@ export default {
         color = powerColors[character.power] || color
       }
       
+      // Remove the error handler to prevent loops
+      event.target.onerror = null
       event.target.src = `https://via.placeholder.com/200x300/${color}/ffffff?text=${character?.name || 'Character'}`
     }
   }

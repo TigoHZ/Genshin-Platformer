@@ -270,6 +270,11 @@ export default {
     },
     
     handleImageError(event) {
+      // Prevent multiple error handling on the same image
+      if (event.target.src.includes('via.placeholder.com')) {
+        return // Already using placeholder, don't handle error again
+      }
+      
       const character = this.selectedCharacter
       let color = '667eea'
       if (character) {
@@ -279,6 +284,9 @@ export default {
         }
         color = powerColors[character.power] || color
       }
+      
+      // Remove the error handler to prevent loops
+      event.target.onerror = null
       event.target.src = `https://via.placeholder.com/60x60/${color}/ffffff?text=${character?.name?.charAt(0) || 'C'}`
     }
   }
@@ -500,6 +508,7 @@ body {
   height: 60px;
   border-radius: 50%;
   border: 3px solid rgba(255, 255, 255, 0.3);
+  object-fit: cover;
 }
 
 .selected-character-details h3 {

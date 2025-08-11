@@ -97,7 +97,7 @@ export default {
       player: {
         x: 100,
         y: 400,
-        width: 40,
+        width: 60,
         height: 60,
         velocityX: 0,
         velocityY: 0,
@@ -661,14 +661,41 @@ export default {
       }
       
       if (this.player.image) {
-        // Draw character image
+        // Enable smoothing for character images to prevent pixelation
+        this.ctx.imageSmoothingEnabled = true
+        this.ctx.imageSmoothingQuality = 'high'
+        
+        // Calculate aspect ratio and center the image
+        const imgAspect = this.player.image.width / this.player.image.height
+        const playerAspect = this.player.width / this.player.height
+        
+        let drawWidth = this.player.width
+        let drawHeight = this.player.height
+        let drawX = this.player.x
+        let drawY = this.player.y
+        
+        // Maintain aspect ratio (similar to object-fit: cover)
+        if (imgAspect > playerAspect) {
+          // Image is wider than player box
+          drawWidth = this.player.height * imgAspect
+          drawX = this.player.x - (drawWidth - this.player.width) / 2
+        } else {
+          // Image is taller than player box
+          drawHeight = this.player.width / imgAspect
+          drawY = this.player.y - (drawHeight - this.player.height) / 2
+        }
+        
+        // Draw character image with maintained aspect ratio
         this.ctx.drawImage(
           this.player.image,
-          this.player.x,
-          this.player.y,
-          this.player.width,
-          this.player.height
+          drawX,
+          drawY,
+          drawWidth,
+          drawHeight
         )
+        
+        // Restore pixel-perfect rendering for other elements
+        this.ctx.imageSmoothingEnabled = false
       } else {
         // Fallback rectangle if image fails to load
         this.ctx.fillStyle = '#ff6b6b'
@@ -772,6 +799,7 @@ export default {
   height: 40px;
   border-radius: 50%;
   border: 2px solid rgba(255, 255, 255, 0.3);
+  object-fit: cover;
 }
 
 .character-info h3 {
