@@ -2,7 +2,7 @@
   <div class="app">
     <header class="game-header">
       <div class="header-left">
-        <h1>🎮 Genshin Impact Platformer</h1>
+        <h1>🎮 Pinda Platforming</h1>
       </div>
       <div class="game-controls">
         <button 
@@ -68,7 +68,7 @@
             >
             <div class="selected-character-details">
               <h3>{{ selectedCharacter?.name }}</h3>
-              <p>{{ selectedCharacter?.vision }} • {{ selectedCharacter?.weapon }}</p>
+              <p>{{ selectedCharacter?.power }} • {{ selectedCharacter?.origin }}</p>
             </div>
           </div>
           
@@ -108,7 +108,7 @@
     <div v-if="loading" class="loading-overlay">
       <div class="loading-spinner">
         <div class="spinner"></div>
-        <p>Loading Genshin characters...</p>
+        <p>Loading characters...</p>
         <div v-if="loadingProgress > 0" class="progress-bar">
           <div class="progress-fill" :style="{ width: loadingProgress + '%' }"></div>
         </div>
@@ -121,7 +121,8 @@
 <script>
 import CharacterSelector from './components/CharacterSelector.vue'
 import PlatformerGame from './components/game/PlatformerGame.vue'
-import { GenshinAPI } from './services/genshinApi.js'
+import { CharacterAPI } from './services/characterApi.js'
+import { levels } from './levels/index.js'
 
 export default {
   name: 'App',
@@ -145,44 +146,8 @@ export default {
       loadingMore: false,
       loadingProgress: 0,
       
-      // Level data
-      levels: [
-        {
-          id: 1,
-          name: "Tutorial Plains",
-          description: "Learn the basics in this gentle introduction",
-          difficulty: "Easy",
-          color: "#48bb78"
-        },
-        {
-          id: 2,
-          name: "Jumping Challenge",
-          description: "Test your precision jumping skills",
-          difficulty: "Medium",
-          color: "#ed8936"
-        },
-        {
-          id: 3,
-          name: "Narrow Passages",
-          description: "Navigate through tight spaces",
-          difficulty: "Medium",
-          color: "#9f7aea"
-        },
-        {
-          id: 4,
-          name: "Floating Fortress",
-          description: "Complex platforming in the sky",
-          difficulty: "Hard",
-          color: "#38b2ac"
-        },
-        {
-          id: 5,
-          name: "Sky Sanctuary",
-          description: "The ultimate challenge awaits",
-          difficulty: "Expert",
-          color: "#f56565"
-        }
-      ]
+      // Level data (imported from levels folder)
+      levels
     }
   },
   
@@ -206,7 +171,7 @@ export default {
       this.loadingProgress = 0
       try {
         console.log('🔄 Loading character list...')
-        this.allCharacterIds = await GenshinAPI.getAllCharacters()
+        this.allCharacterIds = await CharacterAPI.getAllCharacters()
         console.log('✅ Found', this.allCharacterIds.length, 'total characters')
         
         await this.loadCharacterPage(1)
@@ -232,7 +197,7 @@ export default {
         
         console.log(`🔄 Loading page ${page} (${pageIds.length} characters)...`)
         
-        const pageCharacters = await GenshinAPI.getCharactersByIds(pageIds, (progress) => {
+        const pageCharacters = await CharacterAPI.getCharactersByIds(pageIds, (progress) => {
           this.loadingProgress = progress
         })
         
@@ -308,16 +273,11 @@ export default {
       const character = this.selectedCharacter
       let color = '667eea'
       if (character) {
-        const elementColors = {
-          'Pyro': 'ff6b47',
-          'Hydro': '4fc3f7',
-          'Electro': '9c27b0',
-          'Cryo': '81c4e8',
-          'Geo': 'ffb74d',
-          'Anemo': '4caf50',
-          'Dendro': '689f38'
+        const powerColors = {
+          'Wind Mastery': '4caf50',
+          'Crimson Moon': 'ff6b47'
         }
-        color = elementColors[character.vision] || color
+        color = powerColors[character.power] || color
       }
       event.target.src = `https://via.placeholder.com/60x60/${color}/ffffff?text=${character?.name?.charAt(0) || 'C'}`
     }

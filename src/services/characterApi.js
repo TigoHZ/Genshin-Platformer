@@ -1,6 +1,6 @@
-import { characters } from '../data/characters.js'
+import { characters } from '../characters/index.js'
 
-export class GenshinAPI {
+export class CharacterAPI {
   static async getAllCharacters() {
     // Simulate API delay for realistic experience
     await new Promise(resolve => setTimeout(resolve, 200))

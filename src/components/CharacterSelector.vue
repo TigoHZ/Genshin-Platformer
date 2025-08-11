@@ -13,22 +13,10 @@
           class="search-input"
         >
       </div>
-      <div class="filter-group">
-        <select v-model="selectedElement" class="element-filter">
-          <option value="">All Elements</option>
-          <option value="Pyro">🔥 Pyro</option>
-          <option value="Hydro">💧 Hydro</option>
-          <option value="Electro">⚡ Electro</option>
-          <option value="Cryo">❄️ Cryo</option>
-          <option value="Geo">🪨 Geo</option>
-          <option value="Anemo">💨 Anemo</option>
-          <option value="Dendro">🌿 Dendro</option>
-        </select>
-      </div>
     </div>
     
     <div v-if="loading" class="loading-message">
-      <p>Loading awesome Genshin characters...</p>
+      <p>Loading awesome characters...</p>
     </div>
     
     <div v-else-if="characters.length === 0" class="no-characters">
@@ -41,9 +29,7 @@
         :key="character.id"
         class="character-card"
         :class="{ 
-          'selected': selectedCharacter && selectedCharacter.id === character.id,
-          'rarity-5': character.rarity === 5,
-          'rarity-4': character.rarity === 4
+          'selected': selectedCharacter && selectedCharacter.id === character.id
         }"
         @click="selectCharacter(character)"
       >
@@ -55,9 +41,6 @@
             @error="handleImageError"
             loading="lazy"
           >
-          <div class="rarity-stars">
-            <span v-for="n in character.rarity" :key="n" class="star">⭐</span>
-          </div>
         </div>
         
         <div class="character-info">
@@ -65,14 +48,18 @@
           <p class="character-title">{{ character.title }}</p>
           
           <div class="character-details">
-            <span class="element" :class="character.vision?.toLowerCase()">
-              {{ character.vision }}
+            <span class="power" :class="character.power?.toLowerCase().replace(' ', '_')">
+              {{ character.power }}
             </span>
-            <span class="weapon">{{ character.weapon }}</span>
+            <span class="origin">{{ character.origin }}</span>
           </div>
           
           <div class="character-description">
-            {{ character.description ? character.description.substring(0, 100) + '...' : 'A mysterious character' }}
+            {{ character.description ? 
+              (character.description.length > 100 ? 
+                character.description.substring(0, 100) + '...' : 
+                character.description) : 
+              'A mysterious character' }}
           </div>
         </div>
       </div>
@@ -104,10 +91,8 @@
           <h3>{{ selectedCharacter.name }}</h3>
           <p class="preview-title">{{ selectedCharacter.title }}</p>
           <div class="preview-stats">
-            <span class="stat">🌟 {{ selectedCharacter.rarity }} Star</span>
-            <span class="stat">⚔️ {{ selectedCharacter.weapon }}</span>
-            <span class="stat">🔥 {{ selectedCharacter.vision }}</span>
-            <span class="stat">🏠 {{ selectedCharacter.nation }}</span>
+            <span class="stat">⚡ {{ selectedCharacter.power }}</span>
+            <span class="stat">🏠 {{ selectedCharacter.origin }}</span>
           </div>
         </div>
       </div>
@@ -150,8 +135,7 @@ export default {
   
   data() {
     return {
-      searchQuery: '',
-      selectedElement: ''
+      searchQuery: ''
     }
   },
   
@@ -163,13 +147,6 @@ export default {
       if (this.searchQuery) {
         filtered = filtered.filter(character =>
           character.name.toLowerCase().includes(this.searchQuery.toLowerCase())
-        )
-      }
-      
-      // Filter by element
-      if (this.selectedElement) {
-        filtered = filtered.filter(character =>
-          character.vision === this.selectedElement
         )
       }
       
@@ -191,16 +168,11 @@ export default {
       
       let color = '667eea'
       if (character) {
-        const elementColors = {
-          'Pyro': 'ff6b47',
-          'Hydro': '4fc3f7',
-          'Electro': '9c27b0',
-          'Cryo': '81c4e8',
-          'Geo': 'ffb74d',
-          'Anemo': '4caf50',
-          'Dendro': '689f38'
+        const powerColors = {
+          'Wind Mastery': '4caf50',
+          'Crimson Moon': 'ff6b47'
         }
-        color = elementColors[character.vision] || color
+        color = powerColors[character.power] || color
       }
       
       event.target.src = `https://via.placeholder.com/200x300/${color}/ffffff?text=${character?.name || 'Character'}`
@@ -247,7 +219,7 @@ export default {
   gap: 8px;
 }
 
-.search-input, .element-filter {
+.search-input {
   padding: 12px 16px;
   border: 2px solid rgba(255, 255, 255, 0.2);
   border-radius: 12px;
@@ -258,7 +230,7 @@ export default {
   min-width: 200px;
 }
 
-.search-input:focus, .element-filter:focus {
+.search-input:focus {
   outline: none;
   border-color: #ff6b6b;
   background: rgba(255, 255, 255, 0.15);
@@ -269,14 +241,6 @@ export default {
   color: rgba(255, 255, 255, 0.5);
 }
 
-.element-filter {
-  cursor: pointer;
-}
-
-.element-filter option {
-  background: #2c3e50;
-  color: white;
-}
 
 .pagination-info {
   text-align: center;
@@ -354,13 +318,6 @@ export default {
   background: rgba(255, 107, 107, 0.1);
 }
 
-.character-card.rarity-5 {
-  background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(255, 140, 0, 0.1) 100%);
-}
-
-.character-card.rarity-4 {
-  background: linear-gradient(135deg, rgba(138, 43, 226, 0.1) 0%, rgba(75, 0, 130, 0.1) 100%);
-}
 
 .character-image-container {
   position: relative;
@@ -418,7 +375,7 @@ export default {
   flex-wrap: wrap;
 }
 
-.element, .weapon {
+.power, .origin {
   background: rgba(255, 255, 255, 0.1);
   padding: 4px 8px;
   border-radius: 12px;
@@ -426,13 +383,8 @@ export default {
   font-weight: 500;
 }
 
-.element.pyro { background: rgba(255, 69, 0, 0.3); }
-.element.hydro { background: rgba(0, 191, 255, 0.3); }
-.element.electro { background: rgba(138, 43, 226, 0.3); }
-.element.cryo { background: rgba(135, 206, 235, 0.3); }
-.element.geo { background: rgba(255, 215, 0, 0.3); }
-.element.anemo { background: rgba(0, 255, 127, 0.3); }
-.element.dendro { background: rgba(34, 139, 34, 0.3); }
+.power.wind_mastery { background: rgba(0, 255, 127, 0.3); }
+.power.crimson_moon { background: rgba(255, 69, 0, 0.3); }
 
 .character-description {
   font-size: 0.8rem;

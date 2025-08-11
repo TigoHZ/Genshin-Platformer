@@ -10,15 +10,15 @@
         >
         <div>
           <h3>{{ selectedCharacter.name }}</h3>
-          <p>{{ selectedCharacter.vision }} • {{ selectedCharacter.weapon }}</p>
+          <p>{{ selectedCharacter.power }} • {{ selectedCharacter.origin }}</p>
         </div>
       </div>
       
       <div class="controls-info">
         <p><strong>Controls:</strong></p>
         <p>WASD or Arrow Keys to move • Space to jump</p>
-        <p v-if="selectedCharacter.vision" class="vision-abilities">
-          <strong>{{ selectedCharacter.vision }} Abilities:</strong> {{ getVisionAbilities() }}
+        <p v-if="selectedCharacter.power" class="power-abilities">
+          <strong>{{ selectedCharacter.power }} Abilities:</strong> {{ getPowerAbilities() }}
         </p>
       </div>
       
@@ -64,6 +64,8 @@
 </template>
 
 <script>
+import { levels } from '../../levels/index.js'
+
 export default {
   name: 'PlatformerGame',
   
@@ -148,140 +150,8 @@ export default {
         y: 0
       },
       
-      // Levels - Redesigned to be more traditional platformer levels
-      levels: [
-        // Level 1 - Tutorial Plains (Easy introduction with basic jumps)
-        {
-          name: "Tutorial Plains",
-          startX: 50,
-          startY: 500,
-          platforms: [
-            // Starting ground
-            { x: 0, y: 550, width: 200, height: 50, color: '#4a5568' },
-            // Basic stepping stones
-            { x: 250, y: 520, width: 80, height: 30, color: '#48bb78' },
-            { x: 380, y: 490, width: 80, height: 30, color: '#48bb78' },
-            // Small gap to teach jumping
-            { x: 520, y: 460, width: 120, height: 30, color: '#ed8936' },
-            // Final platform before goal
-            { x: 700, y: 400, width: 150, height: 40, color: '#38b2ac' },
-            // Goal platform
-            { x: 900, y: 350, width: 100, height: 50, color: '#4a5568' }
-          ],
-          goal: { x: 925, y: 290 }
-        },
-        
-        // Level 2 - Leaping Ledges (Medium difficulty with longer jumps)
-        {
-          name: "Leaping Ledges", 
-          startX: 50,
-          startY: 480,
-          platforms: [
-            // Starting area
-            { x: 0, y: 530, width: 120, height: 30, color: '#4a5568' },
-            // Rising platforms with increasing gaps
-            { x: 200, y: 470, width: 70, height: 25, color: '#48bb78' },
-            { x: 350, y: 410, width: 70, height: 25, color: '#ed8936' },
-            { x: 520, y: 350, width: 60, height: 25, color: '#9f7aea' },
-            // Tricky section with smaller platforms
-            { x: 650, y: 290, width: 50, height: 20, color: '#f687b3' },
-            { x: 780, y: 230, width: 50, height: 20, color: '#fbb6ce' },
-            // Final stretch
-            { x: 900, y: 170, width: 80, height: 25, color: '#38b2ac' },
-            { x: 1050, y: 120, width: 150, height: 40, color: '#4a5568' }
-          ],
-          goal: { x: 1100, y: 60 }
-        },
-        
-        // Level 3 - Narrow Passages (Precision platforming)
-        {
-          name: "Narrow Passages",
-          startX: 50,
-          startY: 520,
-          platforms: [
-            // Starting platform
-            { x: 0, y: 570, width: 100, height: 30, color: '#4a5568' },
-            // Narrow precision jumps
-            { x: 150, y: 520, width: 40, height: 15, color: '#48bb78' },
-            { x: 240, y: 470, width: 35, height: 15, color: '#ed8936' },
-            { x: 320, y: 420, width: 35, height: 15, color: '#9f7aea' },
-            // Ceiling obstacles (requires ducking)
-            { x: 400, y: 370, width: 60, height: 15, color: '#38b2ac' },
-            { x: 350, y: 320, width: 80, height: 15, color: '#718096' }, // ceiling platform
-            { x: 520, y: 370, width: 40, height: 15, color: '#f687b3' },
-            // More precision jumps
-            { x: 620, y: 320, width: 35, height: 15, color: '#fbb6ce' },
-            { x: 720, y: 270, width: 35, height: 15, color: '#a78bfa' },
-            { x: 820, y: 220, width: 40, height: 15, color: '#34d399' },
-            // Final area
-            { x: 920, y: 170, width: 120, height: 30, color: '#4a5568' }
-          ],
-          goal: { x: 960, y: 110 }
-        },
-        
-        // Level 4 - Floating Fortress (Complex multi-path platforming)
-        {
-          name: "Floating Fortress",
-          startX: 50,
-          startY: 520,
-          platforms: [
-            // Starting area
-            { x: 0, y: 570, width: 120, height: 30, color: '#4a5568' },
-            // Lower path
-            { x: 180, y: 530, width: 60, height: 20, color: '#48bb78' },
-            { x: 290, y: 490, width: 60, height: 20, color: '#48bb78' },
-            { x: 400, y: 450, width: 80, height: 20, color: '#48bb78' },
-            // Upper path (harder but shorter)
-            { x: 150, y: 420, width: 50, height: 15, color: '#ed8936' },
-            { x: 250, y: 380, width: 45, height: 15, color: '#ed8936' },
-            { x: 350, y: 340, width: 45, height: 15, color: '#ed8936' },
-            { x: 450, y: 300, width: 50, height: 15, color: '#ed8936' },
-            // Convergence point
-            { x: 550, y: 400, width: 80, height: 25, color: '#9f7aea' },
-            // Final challenge section
-            { x: 680, y: 350, width: 40, height: 15, color: '#38b2ac' },
-            { x: 770, y: 300, width: 40, height: 15, color: '#f687b3' },
-            { x: 860, y: 250, width: 45, height: 15, color: '#fbb6ce' },
-            { x: 960, y: 200, width: 50, height: 15, color: '#a78bfa' },
-            // Goal platform
-            { x: 1080, y: 150, width: 120, height: 40, color: '#4a5568' }
-          ],
-          goal: { x: 1120, y: 90 }
-        },
-        
-        // Level 5 - Sky Sanctuary (Expert level with extreme precision)
-        {
-          name: "Sky Sanctuary",
-          startX: 50,
-          startY: 550,
-          platforms: [
-            // Starting platform
-            { x: 0, y: 600, width: 100, height: 30, color: '#4a5568' },
-            // Ultra-precision section
-            { x: 130, y: 550, width: 30, height: 12, color: '#48bb78' },
-            { x: 190, y: 500, width: 25, height: 12, color: '#ed8936' },
-            { x: 245, y: 450, width: 25, height: 12, color: '#9f7aea' },
-            { x: 300, y: 400, width: 30, height: 12, color: '#38b2ac' },
-            // Moving platform simulation (static but positioned for maximum challenge)
-            { x: 370, y: 350, width: 25, height: 10, color: '#f687b3' },
-            { x: 420, y: 310, width: 25, height: 10, color: '#fbb6ce' },
-            { x: 470, y: 270, width: 25, height: 10, color: '#a78bfa' },
-            // Fake-out section (platforms that look like paths but are dead ends)
-            { x: 520, y: 230, width: 30, height: 10, color: '#718096' },
-            { x: 580, y: 190, width: 25, height: 10, color: '#718096' }, // dead end
-            // Real path (requires backtracking and precise jumping)
-            { x: 460, y: 200, width: 35, height: 12, color: '#34d399' },
-            { x: 380, y: 160, width: 30, height: 12, color: '#60a5fa' },
-            { x: 300, y: 120, width: 30, height: 12, color: '#fde68a' },
-            // Final gauntlet
-            { x: 360, y: 80, width: 25, height: 10, color: '#c084fc' },
-            { x: 420, y: 40, width: 25, height: 10, color: '#ec4899' },
-            // Victory platform
-            { x: 480, y: 10, width: 80, height: 30, color: '#4a5568' }
-          ],
-          goal: { x: 510, y: -50 }
-        }
-      ]
+      // Levels - Imported from levels folder
+      levels
     }
   },
   
@@ -290,8 +160,8 @@ export default {
       return this.currentLevel >= this.levels.length - 1
     },
     
-    currentVision() {
-      return this.selectedCharacter.vision?.toLowerCase() || null
+    currentPower() {
+      return this.selectedCharacter.power?.toLowerCase().replace(' ', '_') || null
     }
   },
   
@@ -310,7 +180,7 @@ export default {
       this.setupCanvas()
       this.setupEventListeners()
       this.loadPlayerImage()
-      this.setupVisionAbilities()
+      this.setupPowerAbilities()
       this.startGameLoop()
     },
     
@@ -347,30 +217,15 @@ export default {
       }
     },
     
-    setupVisionAbilities() {
-      const vision = this.currentVision
-      
-      // Reset player abilities
-      this.player.speed = 5
-      this.player.jumpPower = 15
-      this.player.canDoubleJump = false
-      
-      // Apply vision-specific abilities
-      switch(vision) {
-        case 'anemo':
-          this.player.jumpPower = 30 // Double jump height
-          break
-        case 'pyro':
-          this.player.speed = 6.5 // 1.3x speed
-          break
-        case 'hydro':
-          this.player.canDoubleJump = true
-          break
-        case 'cryo':
-          this.player.speed = 6 // Faster speed
-          this.player.canDoubleJump = true
-          break
-        // Dendro and Geo abilities are handled in input/update methods
+    setupPowerAbilities() {
+      if (this.selectedCharacter.setupAbilities) {
+        // Use character's own setup method
+        this.selectedCharacter.setupAbilities(this.player)
+      } else {
+        // Fallback to defaults if no setup method
+        this.player.speed = 5
+        this.player.jumpPower = 15
+        this.player.canDoubleJump = false
       }
     },
     
@@ -479,7 +334,7 @@ export default {
     
     update(deltaTime) {
       this.updatePlayer()
-      this.handleVisionAbilities()
+      this.handlePowerAbilities()
       this.checkCollisions()
       this.updateCamera()
       this.checkGameOver()
@@ -487,8 +342,7 @@ export default {
     },
     
     updatePlayer() {
-      // Cryo sliding effect
-      const frictionMultiplier = this.currentVision === 'cryo' ? 0.95 : this.friction
+      const frictionMultiplier = this.friction
       
       // Horizontal movement
       if (this.keys.left) {
@@ -508,7 +362,7 @@ export default {
           this.player.onGround = false
           this.player.hasDoubleJumped = false
         }
-        // Double jump for Hydro and Cryo
+        // Double jump for Crimson Moon
         else if (this.player.canDoubleJump && !this.player.hasDoubleJumped) {
           this.player.velocityY = -this.player.jumpPower * 0.8
           this.player.hasDoubleJumped = true
@@ -520,8 +374,8 @@ export default {
         this.player.hasDoubleJumped = false
       }
       
-      // Pyro trail effect
-      if (this.currentVision === 'pyro' && (this.keys.left || this.keys.right)) {
+      // Trail effect using character's method
+      if (this.selectedCharacter.shouldShowTrail && this.selectedCharacter.shouldShowTrail(this.keys)) {
         this.addTrailParticle()
       }
       
@@ -545,74 +399,14 @@ export default {
       }
     },
     
-    handleVisionAbilities() {
-      // Dendro teleport ability
-      if (this.currentVision === 'dendro' && this.keys.e && this.player.teleportCooldown === 0) {
-        this.teleportPlayer()
-        this.player.teleportCooldown = 60 // 1 second cooldown at 60fps
-      }
-      
-      // Geo box creation
-      if (this.currentVision === 'geo' && this.keys.e && !this.player.geoBoxUsed) {
-        this.createGeoBox()
-        this.player.geoBoxUsed = true
+    handlePowerAbilities() {
+      // Use character's own special ability handler
+      if (this.selectedCharacter.handleSpecialAbility) {
+        const platformsAndBoxes = [...this.platforms, ...this.geoBoxes]
+        this.selectedCharacter.handleSpecialAbility(this.keys, this.player, platformsAndBoxes)
       }
     },
     
-    teleportPlayer() {
-      const teleportDistance = 100
-      let newX = this.player.x
-      let newY = this.player.y
-      
-      // Determine direction based on movement keys
-      if (this.keys.left && this.keys.up) {
-        newX -= teleportDistance * 0.7
-        newY -= teleportDistance * 0.7
-      } else if (this.keys.right && this.keys.up) {
-        newX += teleportDistance * 0.7
-        newY -= teleportDistance * 0.7
-      } else if (this.keys.left && this.keys.down) {
-        newX -= teleportDistance * 0.7
-        newY += teleportDistance * 0.7
-      } else if (this.keys.right && this.keys.down) {
-        newX += teleportDistance * 0.7
-        newY += teleportDistance * 0.7
-      } else if (this.keys.left) {
-        newX -= teleportDistance
-      } else if (this.keys.right) {
-        newX += teleportDistance
-      } else if (this.keys.up) {
-        newY -= teleportDistance
-      } else if (this.keys.down) {
-        newY += teleportDistance
-      } else {
-        // Default to facing direction
-        newX += teleportDistance * this.player.direction
-      }
-      
-      // Check if teleport destination is valid (not inside a platform)
-      const teleportRect = {
-        x: newX,
-        y: newY,
-        width: this.player.width,
-        height: this.player.height
-      }
-      
-      let canTeleport = true
-      for (const platform of [...this.platforms, ...this.geoBoxes]) {
-        if (this.isColliding(teleportRect, platform)) {
-          canTeleport = false
-          break
-        }
-      }
-      
-      if (canTeleport) {
-        this.player.x = newX
-        this.player.y = newY
-        this.player.velocityX *= 0.5
-        this.player.velocityY *= 0.5
-      }
-    },
     
     createGeoBox() {
       const boxSize = 40
@@ -791,21 +585,27 @@ export default {
     },
     
     drawEffects() {
-      // Draw Pyro trail
-      if (this.currentVision === 'pyro') {
+      // Draw character trail
+      if (this.selectedCharacter.getTrailColor) {
         for (const particle of this.player.trail) {
           const alpha = particle.life / particle.maxLife
-          this.ctx.fillStyle = `rgba(255, 69, 0, ${alpha * 0.8})`
-          const size = 6 * alpha
-          this.ctx.fillRect(particle.x - size/2, particle.y - size/2, size, size)
+          const trailColor = this.selectedCharacter.getTrailColor(alpha)
+          if (trailColor) {
+            this.ctx.fillStyle = trailColor
+            const size = 6 * alpha
+            this.ctx.fillRect(particle.x - size/2, particle.y - size/2, size, size)
+          }
         }
       }
       
-      // Draw teleport cooldown indicator for Dendro
-      if (this.currentVision === 'dendro' && this.player.teleportCooldown > 0) {
+      // Draw special ability cooldown indicator
+      if (this.selectedCharacter.getCooldownColor && this.player.teleportCooldown > 0) {
         const cooldownPercent = this.player.teleportCooldown / 60
-        this.ctx.fillStyle = `rgba(34, 139, 34, ${cooldownPercent})`
-        this.ctx.fillRect(this.player.x, this.player.y - 10, this.player.width * (1 - cooldownPercent), 4)
+        const cooldownColor = this.selectedCharacter.getCooldownColor(cooldownPercent)
+        if (cooldownColor) {
+          this.ctx.fillStyle = cooldownColor
+          this.ctx.fillRect(this.player.x, this.player.y - 10, this.player.width * (1 - cooldownPercent), 4)
+        }
       }
     },
     
@@ -905,28 +705,20 @@ export default {
     restartGame() {
       // Restart current level
       this.loadLevel(this.currentLevel)
-      this.setupVisionAbilities()
+      this.setupPowerAbilities()
       this.startGameLoop()
     },
     
     nextLevel() {
       if (!this.isLastLevel) {
         this.loadLevel(this.currentLevel + 1)
-        this.setupVisionAbilities()
+        this.setupPowerAbilities()
         this.startGameLoop()
       }
     },
     
-    getVisionAbilities() {
-      switch(this.currentVision) {
-        case 'anemo': return 'Double jump height'
-        case 'pyro': return '1.3x speed + fire trail'
-        case 'dendro': return 'Press E to teleport'
-        case 'hydro': return 'Double jump'
-        case 'geo': return 'Press E to create box (once per level)'
-        case 'cryo': return 'Sliding movement + double jump + faster speed'
-        default: return 'No special abilities'
-      }
+    getPowerAbilities() {
+      return this.selectedCharacter.abilities?.specialAbility || 'No special abilities'
     },
     
     handleImageError() {
@@ -1101,7 +893,7 @@ export default {
   gap: 10px;
 }
 
-.vision-abilities {
+.power-abilities {
   color: rgba(255, 255, 255, 0.6);
   font-size: 0.8rem;
   margin-top: 5px;
