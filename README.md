@@ -8,7 +8,7 @@ Een stom platformer spelletje dat ik maak om de tijd te doden
 
 ```bash
 # Clone the repository
-git clone https://github.com/YOUR_USERNAME/genshin-platformer.git
+git clone https://github.com/TigoHZ/pinda-platformer.git
 cd genshin-platformer
 
 # Install dependencies  
@@ -17,8 +17,8 @@ npm install
 # Start development server
 npm run dev
 ```
-Then open http://localhost:5173 in your browser!
-
+open http://localhost:5173 in je browser!
+tada
 ##  Features
 - **2 Characters**:Ja hier moet ik nog aan werken
 - **5 hele levels**: Bruh ik heb deze niet eens zelf gemaakt deze levels zijn poep
