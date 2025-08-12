@@ -598,6 +598,29 @@ export default {
         }
       }
       
+      // Draw tornado particles for Venti's updraft
+      if (this.selectedCharacter.getTornadoParticles && this.player.isUpdrafting) {
+        const tornadoParticles = this.selectedCharacter.getTornadoParticles(this.player)
+        for (const particle of tornadoParticles) {
+          // Minty green color with varying opacity
+          const alpha = particle.life * 0.6
+          this.ctx.fillStyle = `rgba(64, 224, 140, ${alpha})`
+          
+          // Draw circular particle
+          this.ctx.beginPath()
+          this.ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2)
+          this.ctx.fill()
+          
+          // Add a slight glow effect
+          this.ctx.shadowColor = 'rgba(64, 224, 140, 0.3)'
+          this.ctx.shadowBlur = 4
+          this.ctx.beginPath()
+          this.ctx.arc(particle.x, particle.y, particle.size * 0.5, 0, Math.PI * 2)
+          this.ctx.fill()
+          this.ctx.shadowBlur = 0
+        }
+      }
+      
       // Draw special ability cooldown indicator
       if (this.selectedCharacter.getCooldownColor && this.player.teleportCooldown > 0) {
         const cooldownPercent = this.player.teleportCooldown / 60

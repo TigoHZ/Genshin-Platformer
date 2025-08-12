@@ -21,14 +21,6 @@
           ← Back to Character Selection
         </button>
         <button 
-          v-if="showLevelSelector" 
-          class="btn btn-primary"
-          :disabled="!selectedLevel"
-          @click="startGame"
-        >
-          {{ selectedLevel ? `Play ${selectedLevel.name}` : 'Select a Level First' }}
-        </button>
-        <button 
           v-if="gameStarted" 
           class="btn btn-secondary"
           @click="backToLevelSelection"
@@ -85,8 +77,17 @@
               <div class="level-info">
                 <h3 class="level-name">{{ level.name }}</h3>
                 <p class="level-description">{{ level.description }}</p>
-                <div class="level-difficulty" :class="level.difficulty.toLowerCase()">
-                  {{ level.difficulty }}
+                <div class="level-meta">
+                  <div class="level-difficulty" :class="level.difficulty.toLowerCase()">
+                    {{ level.difficulty }}
+                  </div>
+                  <button 
+                    v-if="selectedLevel && selectedLevel.id === level.id"
+                    class="btn btn-primary level-play-btn"
+                    @click.stop="startGame"
+                  >
+                    Play
+                  </button>
                 </div>
               </div>
             </div>
@@ -486,10 +487,23 @@ body {
   text-transform: uppercase;
 }
 
+.level-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
 .level-difficulty.easy { background: #48bb78; color: white; }
 .level-difficulty.medium { background: #ed8936; color: white; }
 .level-difficulty.hard { background: #e53e3e; color: white; }
 .level-difficulty.expert { background: #9f7aea; color: white; }
+
+.level-play-btn {
+  padding: 10px 20px;
+  font-size: 1rem;
+  border-radius: 8px;
+}
 
 .selected-character-info {
   display: flex;
