@@ -17,7 +17,6 @@ npm install
 # Start development server
 npm run dev
 ```
-open http://localhost:5173 in je browser!
 tada
 ##  Features
 - **2 Characters**:Ja hier moet ik nog aan werken
