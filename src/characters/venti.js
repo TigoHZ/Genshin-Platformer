@@ -3,7 +3,7 @@ export const venti = {
   name: 'Venti',
   title: 'Windborne Bard',
   power: 'Wind Mastery',
-  powerDescription: 'Creates powerful updrafts and wind currents to navigate the battlefield. Press E while on solid ground to generate an updraft that lifts you into the air, then glide in any direction you choose with graceful wind control.',
+  powerDescription: 'Met zijn lyre roept Venti de kracht van de wind op om een luchtstroom te maken. Hiermee kan Venti zichzelf de lucht in gooien en verder vliegen',
   origin: 'Mondstadt',
   description: 'A bard that seems to have arrived on some unknown wind — sometimes sings songs as old as the hills.',
   portraitImage: '/images/characters/venti/portrait.png',

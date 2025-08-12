@@ -3,7 +3,7 @@ export const arlecchino = {
   name: 'Arlecchino',
   title: 'The Knave',
   power: 'Crimson Moon',
-  powerDescription: 'Commands the shadows and crimson flames of destruction. This dark power grants enhanced speed, the ability to dash through shadows, and leaves a haunting crimson trail in her wake. Press E to perform a shadow dash teleport.',
+  powerDescription: 'W.I.P. Door de krachten van de Crimson Moon ben je sneller dan de rest. Druk op e om te teleporteren.',
   origin: "Khaenri'ah",
   description: 'Mama',
   portraitImage: '/images/characters/arlecchino/portrait.png',

@@ -492,18 +492,36 @@ export default {
     },
     
     updateCamera() {
-      // Simple camera follow
+      // Smooth camera follow for X-axis
       this.camera.x = this.player.x - this.gameWidth / 2
-      this.camera.y = this.player.y - this.gameHeight / 2
       
-      // Clamp camera to reasonable bounds
-      this.camera.x = Math.max(-200, Math.min(1200, this.camera.x))
-      this.camera.y = Math.max(-100, Math.min(300, this.camera.y))
+      // Initialize camera Y if not set
+      if (this.camera.y === undefined || this.camera.y === 0) {
+        this.camera.y = this.player.y - this.gameHeight * 0.4 // Start with player in middle-lower area
+      }
+      
+      // Y-axis only moves when player is significantly away from comfortable viewing area
+      const deadZone = 80 // Pixels of dead zone
+      const targetViewY = this.gameHeight * 0.4 // Keep player at 40% down from top of screen
+      const playerScreenY = this.player.y - this.camera.y
+      
+      // Only move Y camera if player is outside the comfortable viewing zone
+      if (playerScreenY < targetViewY - deadZone) {
+        // Player is too high on screen, move camera up
+        this.camera.y = this.player.y - (targetViewY - deadZone)
+      } else if (playerScreenY > targetViewY + deadZone) {
+        // Player is too low on screen, move camera down  
+        this.camera.y = this.player.y - (targetViewY + deadZone)
+      }
+      
+      // Clamp camera to level bounds - allow full level width
+      this.camera.x = Math.max(-500, Math.min(4000, this.camera.x))
+      this.camera.y = Math.max(-200, Math.min(600, this.camera.y))
     },
     
     checkGameOver() {
-      // Player fell below the screen
-      if (this.player.y > this.gameHeight + 100) {
+      // Player fell below the screen OR went too far off the level area
+      if (this.player.y > this.gameHeight + 200) {
         this.endGame()
       }
     },
@@ -540,17 +558,18 @@ export default {
     },
     
     drawBackground() {
-      // Simple gradient background
+      // Simple gradient background that covers the entire level area
       const gradient = this.ctx.createLinearGradient(0, 0, 0, this.gameHeight)
-      gradient.addColorStop(0, '#87CEEB')
-      gradient.addColorStop(1, '#98FB98')
+      gradient.addColorStop(0, '#87CEEB')  // Sky blue
+      gradient.addColorStop(1, '#98FB98')  // Light green
       
       this.ctx.fillStyle = gradient
+      // Ensure background covers the full level width (up to 3500 pixels wide)
       this.ctx.fillRect(
-        this.camera.x - 100, 
-        this.camera.y - 100, 
-        this.gameWidth + 200, 
-        this.gameHeight + 200
+        -500,  // Start well before level
+        -200,  // Start above camera bounds
+        4500,  // Cover full level width + extra
+        this.gameHeight + 400  // Cover full level height + extra
       )
     },
     
