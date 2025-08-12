@@ -91,7 +91,12 @@
           <h3>{{ selectedCharacter.name }}</h3>
           <p class="preview-title">{{ selectedCharacter.title }}</p>
           <div class="preview-stats">
-            <span class="stat">⚡ {{ selectedCharacter.power }}</span>
+            <div class="stat power-stat">
+              <div class="stat-header">⚡ {{ selectedCharacter.power }}</div>
+              <div v-if="selectedCharacter.powerDescription" class="stat-description">
+                {{ selectedCharacter.powerDescription }}
+              </div>
+            </div>
             <span class="stat">🏠 {{ selectedCharacter.origin }}</span>
           </div>
         </div>
@@ -416,11 +421,9 @@ export default {
 }
 
 .preview-image {
-  width: 150px;
-  height: 200px;
-  object-fit: cover;
+  max-width: 300px;
+  max-height: 400px;
   border-radius: 12px;
-  border: 2px solid rgba(255, 255, 255, 0.2);
 }
 
 .preview-info h3 {
@@ -445,6 +448,28 @@ export default {
   padding: 8px 12px;
   border-radius: 8px;
   font-size: 0.9rem;
+}
+
+.power-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 12px;
+  border-radius: 8px;
+}
+
+.stat-header {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #feca57;
+}
+
+.stat-description {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.5;
+  margin-top: 4px;
 }
 
 @media (max-width: 768px) {
